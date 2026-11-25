@@ -1,0 +1,4 @@
+﻿@model SistemaInventario.ViewModels.UsuarioEliminarViewModel
+@{ ViewData["Title"] = "Inhabilitar usuario"; }
+<div class="page-heading"><h2>Inhabilitar usuario</h2><p>Su cuenta no podrá iniciar sesión, pero se conservarán sus operaciones.</p></div>
+<div class="section-card"><div class="alert alert-warning">¿Confirmas que deseas inhabilitar esta cuenta?</div><dl class="row"><dt class="col-sm-3">Nombre</dt><dd class="col-sm-9">@Model.NombreCompleto</dd><dt class="col-sm-3">Correo</dt><dd class="col-sm-9">@Model.Correo</dd><dt class="col-sm-3">Rol</dt><dd class="col-sm-9">@Model.Rol</dd><dt class="col-sm-3">Ventas / compras</dt><dd class="col-sm-9">@Model.Ventas / @Model.Compras</dd></dl><form asp-action="Delete" asp-route-id="@Model.IdUsuario" method="post"><button class="btn btn-warning" type="submit">Inhabilitar cuenta</button> <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a></form></div>

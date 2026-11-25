@@ -1,0 +1,15 @@
+@model SistemaInventario.ViewModels.RolListadoViewModel
+@{ ViewData["Title"] = "Detalle del rol"; }
+
+<div class="page-heading"><h2>Detalle del rol</h2><p>Información y asignaciones actuales del rol.</p></div>
+<div class="section-card">
+    <dl class="row mb-0">
+        <dt class="col-sm-3">Nombre</dt><dd class="col-sm-9">@Model.Nombre</dd>
+        <dt class="col-sm-3">Descripción</dt><dd class="col-sm-9">@(Model.Descripcion ?? "Sin descripción")</dd>
+        <dt class="col-sm-3">Usuarios asignados</dt><dd class="col-sm-9">@Model.UsuariosAsignados</dd>
+    </dl>
+    <div class="d-flex gap-2 mt-4">
+        <a asp-action="Edit" asp-route-id="@Model.IdRol" class="btn btn-primary">Editar</a>
+        <a asp-action="Index" class="btn btn-outline-secondary">Volver al listado</a>
+    </div>
+</div>

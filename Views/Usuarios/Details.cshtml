@@ -1,0 +1,22 @@
+@model SistemaInventario.ViewModels.UsuarioDetalleViewModel
+@{ ViewData["Title"] = "Detalle del usuario"; }
+
+<div class="page-heading">
+    <h2>Detalle del usuario</h2>
+    <p>Información del usuario y sus relaciones registradas.</p>
+</div>
+<div class="section-card">
+    <dl class="row mb-0">
+        <dt class="col-sm-3">Nombre</dt><dd class="col-sm-9">@Model.Nombre</dd>
+        <dt class="col-sm-3">Apellido</dt><dd class="col-sm-9">@Model.Apellido</dd>
+        <dt class="col-sm-3">Correo</dt><dd class="col-sm-9">@Model.Correo</dd>
+        <dt class="col-sm-3">Rol</dt><dd class="col-sm-9">@Model.Rol</dd>
+        <dt class="col-sm-3">Estado</dt><dd class="col-sm-9"><span class="badge @(Model.Estado == "Activo" ? "text-bg-success" : "text-bg-secondary")">@(Model.Estado ?? "Sin estado")</span></dd>
+        <dt class="col-sm-3">Ventas asociadas</dt><dd class="col-sm-9">@Model.Ventas</dd>
+        <dt class="col-sm-3">Compras asociadas</dt><dd class="col-sm-9">@Model.Compras</dd>
+    </dl>
+    <div class="d-flex gap-2 mt-4">
+        <a asp-action="Edit" asp-route-id="@Model.IdUsuario" class="btn btn-primary">Editar</a>
+        <a asp-action="Index" class="btn btn-outline-secondary">Volver al listado</a>
+    </div>
+</div>

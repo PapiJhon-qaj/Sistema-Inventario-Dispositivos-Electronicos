@@ -1,0 +1,16 @@
+@model SistemaInventario.Models.inventario
+@{ ViewData["Title"] = "Registrar unidad"; }
+
+<div class="page-heading">
+    <h2>Registrar unidad de inventario</h2>
+    <p>Asocia una unidad física a un producto existente.</p>
+</div>
+<div class="section-card">
+    <form asp-action="Create" method="post">
+        <partial name="_Formulario" model="Model" />
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary" disabled="@(ViewBag.HayProductos == false)">Guardar unidad</button>
+            <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+        </div>
+    </form>
+</div>

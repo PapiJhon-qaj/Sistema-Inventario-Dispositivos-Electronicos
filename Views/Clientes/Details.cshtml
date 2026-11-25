@@ -1,0 +1,20 @@
+@model SistemaInventario.Models.cliente
+@{ ViewData["Title"] = "Detalle del cliente"; }
+
+<div class="page-heading">
+    <h2>Detalle del cliente</h2>
+    <p>Información registrada para este cliente.</p>
+</div>
+<div class="section-card">
+    <dl class="row mb-0">
+        <dt class="col-sm-3">Documento</dt><dd class="col-sm-9">@(Model.documento ?? "Sin documento")</dd>
+        <dt class="col-sm-3">Nombre</dt><dd class="col-sm-9">@Model.nombre</dd>
+        <dt class="col-sm-3">Apellido</dt><dd class="col-sm-9">@(Model.apellido ?? "Sin apellido")</dd>
+        <dt class="col-sm-3">Teléfono</dt><dd class="col-sm-9">@(Model.telefono ?? "Sin teléfono")</dd>
+        <dt class="col-sm-3">Correo</dt><dd class="col-sm-9">@(Model.correo ?? "Sin correo")</dd>
+    </dl>
+    <div class="d-flex gap-2 mt-4">
+        <a asp-action="Edit" asp-route-id="@Model.idcliente" class="btn btn-primary">Editar</a>
+        <a asp-action="Index" class="btn btn-outline-secondary">Volver al listado</a>
+    </div>
+</div>

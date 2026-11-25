@@ -1,0 +1,4 @@
+﻿@model SistemaInventario.Models.cliente
+@{ ViewData["Title"] = "Inhabilitar cliente"; }
+<div class="page-heading"><h2>Inhabilitar cliente</h2><p>Sus ventas anteriores se conservarán en el historial.</p></div>
+<div class="section-card"><div class="alert alert-warning">¿Confirmas que deseas inhabilitar este cliente? No aparecerá al registrar ventas.</div><dl class="row"><dt class="col-sm-3">Documento</dt><dd class="col-sm-9">@Model.documento</dd><dt class="col-sm-3">Nombre</dt><dd class="col-sm-9">@Model.nombre @Model.apellido</dd></dl><form asp-action="Delete" asp-route-id="@Model.idcliente" method="post"><button class="btn btn-warning" type="submit">Inhabilitar</button> <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a></form></div>

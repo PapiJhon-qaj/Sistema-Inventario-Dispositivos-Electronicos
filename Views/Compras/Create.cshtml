@@ -1,0 +1,152 @@
+@model SistemaInventario.ViewModels.CompraCreateViewModel
+@{ ViewData["Title"] = "Registrar compra"; }
+
+<div class="page-heading">
+    <h2>Registrar compra</h2>
+    <p>Registra una compra con proveedor, usuario responsable y uno o varios productos.</p>
+</div>
+
+<div class="section-card">
+    @if (ViewBag.HayProveedores == false || ViewBag.HayUsuarios == false || ViewBag.HayProductos == false)
+    {
+        <div class="alert alert-warning">
+            Para registrar una compra se necesita al menos un proveedor, un usuario y un producto.
+            @if (ViewBag.HayProveedores == false) { <span><a asp-controller="Proveedores" asp-action="Create" class="alert-link">Registrar proveedor</a>. </span> }
+            @if (ViewBag.HayProductos == false) { <span><a asp-controller="Productos" asp-action="Create" class="alert-link">Registrar producto</a>. </span> }
+            @if (ViewBag.HayUsuarios == false) { <span>No hay usuarios registrados; este proyecto aún no incluye un módulo de usuarios.</span> }
+        </div>
+    }
+
+    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+    <form asp-action="Create" method="post">
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label asp-for="ProveedorId" class="form-label">Proveedor *</label>
+                <select asp-for="ProveedorId" asp-items="ViewBag.Proveedores" class="form-select">
+                    <option value="">Selecciona un proveedor</option>
+                </select>
+                <span asp-validation-for="ProveedorId" class="text-danger"></span>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label asp-for="UsuarioId" class="form-label">Usuario que registra *</label>
+                <select asp-for="UsuarioId" asp-items="ViewBag.Usuarios" class="form-select">
+                    <option value="">Selecciona un usuario registrado</option>
+                </select>
+                <span asp-validation-for="UsuarioId" class="text-danger"></span>
+                <small class="text-muted">El sistema todavía no tiene inicio de sesión; selecciona el usuario responsable.</small>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label asp-for="NumeroFactura" class="form-label">Número de factura</label>
+                <input asp-for="NumeroFactura" class="form-control" maxlength="50" />
+                <span asp-validation-for="NumeroFactura" class="text-danger"></span>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label asp-for="FechaCompra" class="form-label">Fecha de compra *</label>
+                <input asp-for="FechaCompra" class="form-control" type="datetime-local" />
+                <span asp-validation-for="FechaCompra" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mt-2 mb-3">
+            <h5 class="mb-0">Productos de la compra</h5>
+            <button type="button" id="agregar-detalle" class="btn btn-sm btn-outline-primary" disabled="@(ViewBag.HayProductos == false)">Agregar producto</button>
+        </div>
+        <div id="detalles-compra">
+            @for (var i = 0; i < Model.Detalles.Count; i++)
+            {
+                <div class="row g-2 align-items-end border-bottom pb-3 mb-3 detalle-compra">
+                    <div class="col-md-6">
+                        <label asp-for="Detalles[i].ProductoId" class="form-label">Producto *</label>
+                        <select asp-for="Detalles[i].ProductoId" asp-items="ViewBag.Productos" class="form-select">
+                            <option value="">Selecciona un producto</option>
+                        </select>
+                        <span asp-validation-for="Detalles[i].ProductoId" class="text-danger"></span>
+                    </div>
+                    <div class="col-6 col-md-2">
+                        <label asp-for="Detalles[i].Cantidad" class="form-label">Cantidad *</label>
+                        <input asp-for="Detalles[i].Cantidad" class="form-control" type="number" min="1" step="1" />
+                        <span asp-validation-for="Detalles[i].Cantidad" class="text-danger"></span>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <label asp-for="Detalles[i].CostoUnitario" class="form-label">Costo unitario *</label>
+                        <input asp-for="Detalles[i].CostoUnitario" class="form-control" type="number" min="0" max="99999999.99" step="0.01" />
+                        <span asp-validation-for="Detalles[i].CostoUnitario" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-1 text-end"><button type="button" class="btn btn-sm btn-outline-danger quitar-detalle" aria-label="Quitar fila">Quitar</button></div>
+                </div>
+            }
+        </div>
+
+        <template id="detalle-template">
+            <div class="row g-2 align-items-end border-bottom pb-3 mb-3 detalle-compra">
+                <div class="col-md-6">
+                    <label class="form-label" for="Detalles___i___ProductoId">Producto *</label>
+                    <select class="form-select" id="Detalles___i___ProductoId" name="Detalles[__i__].ProductoId">
+                        <option value="">Selecciona un producto</option>
+                        @foreach (var productoItem in (IEnumerable<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>)ViewBag.ProductosLista)
+                        {
+                            <option value="@productoItem.Value">@productoItem.Text</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-6 col-md-2">
+                    <label class="form-label" for="Detalles___i___Cantidad">Cantidad *</label>
+                    <input class="form-control" type="number" min="1" step="1" id="Detalles___i___Cantidad" name="Detalles[__i__].Cantidad" />
+                </div>
+                <div class="col-6 col-md-3">
+                    <label class="form-label" for="Detalles___i___CostoUnitario">Costo unitario (Bs) *</label>
+                    <input class="form-control" type="number" min="0" max="99999999.99" step="0.01" id="Detalles___i___CostoUnitario" name="Detalles[__i__].CostoUnitario" />
+                </div>
+                <div class="col-md-1 text-end"><button type="button" class="btn btn-sm btn-outline-danger quitar-detalle" aria-label="Quitar fila">Quitar</button></div>
+            </div>
+        </template>
+
+        <div class="alert alert-info mt-3 mb-4">
+            Los subtotales y el total se calculan en el servidor. Esta compra no crea unidades de inventario automáticamente: cada unidad física debe registrarse luego desde Inventario para conservar su IMEI o número de serie.
+        </div>
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary" disabled="@(ViewBag.HayProveedores == false || ViewBag.HayUsuarios == false || ViewBag.HayProductos == false)">Guardar compra</button>
+            <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        (() => {
+            const contenedor = document.getElementById('detalles-compra');
+            const plantilla = document.getElementById('detalle-template');
+            const reindexar = () => contenedor.querySelectorAll('.detalle-compra').forEach((fila, indice) => {
+                fila.querySelectorAll('[name]').forEach(elemento => {
+                    elemento.name = elemento.name.replace(/Detalles\[\d+\]/, `Detalles[${indice}]`);
+                });
+                fila.querySelectorAll('[id], label[for]').forEach(elemento => {
+                    if (elemento.id) elemento.id = elemento.id.replace(/Detalles_\d+__/, `Detalles_${indice}__`);
+                    if (elemento.htmlFor) elemento.htmlFor = elemento.htmlFor.replace(/Detalles_\d+__/, `Detalles_${indice}__`);
+                });
+                fila.querySelectorAll('[data-valmsg-for]').forEach(elemento => {
+                    elemento.dataset.valmsgFor = elemento.dataset.valmsgFor.replace(/Detalles\[\d+\]/, `Detalles[${indice}]`);
+                });
+            });
+            document.getElementById('agregar-detalle')?.addEventListener('click', () => {
+                const indice = contenedor.querySelectorAll('.detalle-compra').length;
+                const html = plantilla.innerHTML.replaceAll('__i__', indice);
+                contenedor.insertAdjacentHTML('beforeend', html);
+            });
+            contenedor.addEventListener('click', (evento) => {
+                if (evento.target.closest('.quitar-detalle')) {
+                    const filas = contenedor.querySelectorAll('.detalle-compra');
+                    if (filas.length > 1) {
+                        evento.target.closest('.detalle-compra').remove();
+                        reindexar();
+                    }
+                }
+            });
+            contenedor.closest('form').addEventListener('submit', reindexar);
+        })();
+    </script>
+}

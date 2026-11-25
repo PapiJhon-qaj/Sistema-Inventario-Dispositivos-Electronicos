@@ -1,0 +1,64 @@
+@model SistemaInventario.ViewModels.UsuarioFormViewModel
+
+<div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+@if (ViewBag.HayRoles == false)
+{
+    <div class="alert alert-warning">
+        Para guardar un usuario primero debes registrar un rol.
+        <a asp-controller="Roles" asp-action="Create" class="alert-link">Crear rol</a>
+    </div>
+}
+
+<div class="row">
+    <div class="col-md-6 mb-3">
+        <label asp-for="Nombre" class="form-label">Nombre *</label>
+        <input asp-for="Nombre" class="form-control" maxlength="100" required />
+        <span asp-validation-for="Nombre" class="text-danger"></span>
+    </div>
+    <div class="col-md-6 mb-3">
+        <label asp-for="Apellido" class="form-label">Apellido *</label>
+        <input asp-for="Apellido" class="form-control" maxlength="100" required />
+        <span asp-validation-for="Apellido" class="text-danger"></span>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-3">
+        <label asp-for="Correo" class="form-label">Correo *</label>
+        <input asp-for="Correo" class="form-control" type="email" maxlength="120" autocomplete="email" required />
+        <span asp-validation-for="Correo" class="text-danger"></span>
+    </div>
+    <div class="col-md-6 mb-3">
+        <label asp-for="RolId" class="form-label">Rol *</label>
+        <select asp-for="RolId" asp-items="ViewBag.Roles" class="form-select" required>
+            <option value="">Selecciona un rol</option>
+        </select>
+        <span asp-validation-for="RolId" class="text-danger"></span>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-3">
+        <label asp-for="Password" class="form-label">@(Model.IdUsuario == 0 ? "Contraseña *" : "Nueva contraseña")</label>
+        @if (Model.IdUsuario == 0)
+        {
+            <input id="Password" name="Password" class="form-control" type="password" minlength="8" maxlength="128" autocomplete="new-password" required />
+            <small class="text-muted">Mínimo 8 caracteres. Se guardará protegida con hash.</small>
+        }
+        else
+        {
+            <input id="Password" name="Password" class="form-control" type="password" minlength="8" maxlength="128" autocomplete="new-password" />
+            <small class="text-muted">Déjala vacía para conservar la contraseña actual. Nunca se muestra la contraseña almacenada.</small>
+        }
+        <span asp-validation-for="Password" class="text-danger d-block"></span>
+    </div>
+    <div class="col-md-6 mb-3">
+        <label asp-for="Estado" class="form-label">Estado *</label>
+        <select asp-for="Estado" class="form-select" required>
+            <option value="Activo">Activo</option>
+            <option value="Inactivo">Inactivo</option>
+        </select>
+        <span asp-validation-for="Estado" class="text-danger"></span>
+    </div>
+</div>

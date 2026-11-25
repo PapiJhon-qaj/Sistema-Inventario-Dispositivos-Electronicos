@@ -1,0 +1,104 @@
+
+@model IEnumerable<SistemaInventario.Models.categoria>
+
+@{
+    ViewData["Title"] = "Categorías";
+}
+
+<div class="page-heading d-flex justify-content-between align-items-center">
+    <div>
+        <h2>Gestión de categorías</h2>
+        <p>Administra las categorías de tus productos.</p>
+    </div>
+
+    <a asp-action="Create" class="btn btn-primary">
+        + Nueva categoría
+    </a>
+</div>
+
+@if (TempData["Mensaje"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show">
+        @TempData["Mensaje"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show">
+        @TempData["Error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="section-card">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+        <h5 class="mb-0">Listado de categorías</h5>
+        <div class="btn-group btn-group-sm">
+            <a asp-action="Index" asp-route-estado="activos" class="btn btn-outline-secondary">Activos</a>
+            <a asp-action="Index" asp-route-estado="inactivos" class="btn btn-outline-secondary">Inactivos</a>
+            <a asp-action="Index" asp-route-estado="todos" class="btn btn-outline-secondary">Todos</a>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Descripción</th>
+                    <th>Estado</th>
+                    <th class="text-center">Acciones</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @if (Model.Any())
+                {
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.idcategoria</td>
+                            <td>@item.nombre</td>
+                            <td>@(string.IsNullOrWhiteSpace(item.descripcion) ? "Sin descripción" : item.descripcion)</td>
+                            <td><span class="badge @(item.activo ? "text-bg-success" : "text-bg-secondary")">@(item.activo ? "Activo" : "Inactivo")</span></td>
+
+                            <td class="text-center">
+                                <a asp-action="Edit"
+                                   asp-route-id="@item.idcategoria"
+                                   class="btn btn-sm btn-warning">
+                                    Editar
+                                </a>
+
+                                @if (item.activo)
+                                {
+                                    <a asp-action="Delete" asp-route-id="@item.idcategoria" class="btn btn-sm btn-outline-warning">Inhabilitar</a>
+                                }
+                                else
+                                {
+                                    <form asp-action="Reactivar" asp-route-id="@item.idcategoria" method="post" class="d-inline">
+                                        <button type="submit" class="btn btn-sm btn-outline-success">Activar nuevamente</button>
+                                    </form>
+                                }
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="5" class="text-center text-muted py-4">
+                            No existen categorías registradas.
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <small class="text-muted">
+        Total de categorías: @Model.Count()
+    </small>
+</div>

@@ -1,0 +1,33 @@
+@model SistemaInventario.Models.cliente
+
+<div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+<div class="mb-3">
+    <label asp-for="documento" class="form-label">Documento *</label>
+    <input asp-for="documento" class="form-control" maxlength="30" required />
+    <span asp-validation-for="documento" class="text-danger"></span>
+</div>
+<div class="row">
+    <div class="col-md-6 mb-3">
+        <label asp-for="nombre" class="form-label">Nombre *</label>
+        <input asp-for="nombre" class="form-control" maxlength="100" required />
+        <span asp-validation-for="nombre" class="text-danger"></span>
+    </div>
+    <div class="col-md-6 mb-3">
+        <label asp-for="apellido" class="form-label">Apellido *</label>
+        <input asp-for="apellido" class="form-control" maxlength="100" required />
+        <span asp-validation-for="apellido" class="text-danger"></span>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6 mb-3">
+        <label asp-for="telefono" class="form-label">Teléfono</label>
+        <input asp-for="telefono" class="form-control" maxlength="30" />
+        <span asp-validation-for="telefono" class="text-danger"></span>
+    </div>
+    <div class="col-md-6 mb-3">
+        <label asp-for="correo" class="form-label">Correo</label>
+        <input asp-for="correo" class="form-control" type="email" maxlength="120" />
+        <span asp-validation-for="correo" class="text-danger"></span>
+    </div>
+</div>

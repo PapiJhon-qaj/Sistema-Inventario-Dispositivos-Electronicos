@@ -1,0 +1,203 @@
+@model SistemaInventario.ViewModels.DashboardViewModel
+@{ ViewData["Title"] = "Dashboard"; }
+
+<style>
+    .dashboard-stat { position: relative; overflow: hidden; }
+    .dashboard-stat-top { display: flex; justify-content: space-between; align-items: center; gap: .75rem; }
+    .dashboard-stat-icon { display: inline-flex; width: 38px; height: 38px; align-items: center; justify-content: center; border-radius: 10px; background: #eff6ff; color: #2563eb; font-size: 1.1rem; font-weight: 700; }
+    .dashboard-chart { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: .35rem; align-items: end; }
+    .dashboard-chart-column { min-width: 0; text-align: center; }
+    .dashboard-chart-track { height: 145px; display: flex; align-items: end; justify-content: center; border-bottom: 1px solid #000000; background: repeating-linear-gradient(to top, transparent 0, transparent 35px, #eef1f5 36px); }
+    .dashboard-chart-bar { width: min(68%, 22px); min-height: 0; border-radius: 5px 5px 0 0; transition: height .2s ease; }
+    .dashboard-chart-bar.count { background: linear-gradient(180deg, #60a5fa, #2563eb); }
+    .dashboard-chart-bar.amount { background: linear-gradient(180deg, #34d399, #059669); }
+    .dashboard-chart-month { display: block; margin-top: .4rem; font-size: .7rem; color: #64748b; }
+    .dashboard-chart-value { display: block; min-height: 1rem; font-size: .68rem; color: #475569; white-space: nowrap; }
+    .dashboard-legend { display: flex; flex-wrap: wrap; gap: 1rem; color: #64748b; font-size: .8rem; }
+    .dashboard-legend span { display: inline-flex; align-items: center; gap: .4rem; }
+    .dashboard-legend i { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+    .legend-count { background: #000000; }
+    .legend-amount { background: #059669; }
+    .dashboard-sale-track { height: 10px; border-radius: 99px; background: #4e627e; overflow: hidden; }
+    .dashboard-sale-fill { height: 100%; border-radius: inherit; background: linear-gradient(90deg, #60a5fa, #2563eb); }
+    .dashboard-rank-fill { background: linear-gradient(90deg, #34d399, #059669); }
+    @@media (max-width: 576px) {
+        .dashboard-chart { gap: .12rem; }
+        .dashboard-chart-track { height: 115px; }
+        .dashboard-chart-month, .dashboard-chart-value { font-size: .58rem; }
+        .dashboard-chart-bar { width: 72%; }
+    }
+</style>
+
+<div class="page-heading d-flex justify-content-between align-items-center flex-wrap gap-3">
+    <div><h2>Panel principal</h2><p>Resumen de inventario y ventas con datos de MySQL.</p></div>
+    @if (User.IsInRole("Administrador"))
+    {
+        <a asp-controller="Productos" asp-action="Index" class="btn btn-primary">Administrar productos</a>
+    }
+</div>
+
+<div class="row g-3">
+    <div class="col-sm-6 col-xl-3"><div class="summary-card dashboard-stat"><div class="dashboard-stat-top"><h6>Productos</h6><span class="dashboard-stat-icon" aria-hidden="true">▦</span></div><h3>@Model.TotalProductos</h3><small class="text-muted">Productos registrados</small></div></div>
+    <div class="col-sm-6 col-xl-3"><div class="summary-card dashboard-stat"><div class="dashboard-stat-top"><h6>Unidades disponibles</h6><span class="dashboard-stat-icon" aria-hidden="true">＋</span></div><h3>@Model.UnidadesDisponibles</h3><small class="text-muted">Estado Disponible</small></div></div>
+    <div class="col-sm-6 col-xl-3"><div class="summary-card dashboard-stat"><div class="dashboard-stat-top"><h6>Unidades vendidas</h6><span class="dashboard-stat-icon" aria-hidden="true">↗</span></div><h3>@Model.UnidadesVendidas</h3><small class="text-muted">Estado Vendido</small></div></div>
+    <div class="col-sm-6 col-xl-3"><div class="summary-card dashboard-stat"><div class="dashboard-stat-top"><h6>Compras</h6><span class="dashboard-stat-icon" aria-hidden="true">↓</span></div><h3>@Model.TotalCompras</h3><small class="text-muted">Compras registradas</small></div></div>
+    <div class="col-sm-6 col-xl-3"><div class="summary-card dashboard-stat"><div class="dashboard-stat-top"><h6>Ventas completadas</h6><span class="dashboard-stat-icon" aria-hidden="true">✓</span></div><h3>@Model.TotalVentas</h3><small class="text-muted">Excluye ventas anuladas</small></div></div>
+    <div class="col-sm-6 col-xl-3"><div class="summary-card dashboard-stat"><div class="dashboard-stat-top"><h6>Clientes</h6><span class="dashboard-stat-icon" aria-hidden="true">◎</span></div><h3>@Model.TotalClientes</h3><small class="text-muted">Clientes registrados</small></div></div>
+    <div class="col-sm-6 col-xl-3"><div class="summary-card dashboard-stat"><div class="dashboard-stat-top"><h6>Proveedores</h6><span class="dashboard-stat-icon" aria-hidden="true">◇</span></div><h3>@Model.TotalProveedores</h3><small class="text-muted">Proveedores registrados</small></div></div>
+    <div class="col-sm-6 col-xl-3"><div class="summary-card dashboard-stat"><div class="dashboard-stat-top"><h6>Usuarios activos</h6><span class="dashboard-stat-icon" aria-hidden="true">●</span></div><h3>@Model.TotalUsuariosActivos</h3><small class="text-muted">Estado Activo</small></div></div>
+    <div class="col-12"><div class="summary-card dashboard-stat"><div class="dashboard-stat-top"><h6>Importe total de ventas completadas</h6><span class="dashboard-stat-icon" aria-hidden="true">Bs</span></div><h3>@Model.ImporteTotalVentas.ToString("N2")</h3><small class="text-muted">Suma de venta.total; no incluye anuladas</small></div></div>
+</div>
+
+<div class="section-card">
+    <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
+        <div><h5 class="mb-1">Ventas mensuales · @Model.Anio</h5><small class="text-muted">Sólo ventas Completada del año actual</small></div>
+        <div class="dashboard-legend"><span><i class="legend-count"></i>Cantidad de ventas</span><span><i class="legend-amount"></i>Importe vendido</span></div>
+    </div>
+    <div class="row g-4">
+        <div class="col-12">
+            <div class="small fw-semibold text-muted mb-2">Cantidad de ventas por mes</div>
+            <div class="dashboard-chart" role="img" aria-label="Gráfico de cantidad de ventas completadas por mes">
+                @foreach (var mes in Model.VentasMensuales)
+                {
+                    <div class="dashboard-chart-column" title="@mes.Mes: @mes.Cantidad venta(s)">
+                        <div class="dashboard-chart-track"><div class="dashboard-chart-bar count" style="height:@(mes.AlturaCantidad.ToString("0.#", System.Globalization.CultureInfo.InvariantCulture))%"></div></div>
+                        <span class="dashboard-chart-month">@mes.Mes</span>
+                        <span class="dashboard-chart-value">@mes.Cantidad</span>
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="small fw-semibold text-muted mb-2">Importe vendido por mes</div>
+            <div class="dashboard-chart" role="img" aria-label="Gráfico del importe de ventas completadas por mes">
+                @foreach (var mes in Model.VentasMensuales)
+                {
+                    <div class="dashboard-chart-column" title="@mes.Mes: @mes.Importe.ToString("N2")">
+                        <div class="dashboard-chart-track"><div class="dashboard-chart-bar amount" style="height:@(mes.AlturaImporte.ToString("0.#", System.Globalization.CultureInfo.InvariantCulture))%"></div></div>
+                        <span class="dashboard-chart-month">@mes.Mes</span>
+                        <span class="dashboard-chart-value">@mes.Importe.ToString("N0")</span>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3 mb-3">
+    <div class="col-12 col-lg-6">
+        <div class="section-card h-100">
+            <h5>Ventas por método de pago</h5>
+            <small class="text-muted">Histórico de ventas completadas · cantidad e importe acumulado</small>
+            @if (Model.VentasPorMetodoPago.Count == 0)
+            {
+                <p class="text-muted text-center py-4 mb-0">Aún no hay ventas completadas.</p>
+            }
+            else
+            {
+                <div class="mt-3">
+                    @foreach (var metodo in Model.VentasPorMetodoPago)
+                    {
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between gap-2 mb-1"><strong>@metodo.MetodoPago</strong><span>@metodo.Cantidad venta(s) · Bs @metodo.Importe.ToString("N2")</span></div>
+                            <div class="dashboard-sale-track" role="img" aria-label="@metodo.MetodoPago: @metodo.Cantidad ventas"><div class="dashboard-sale-fill" style="width:@(metodo.Porcentaje.ToString("0.#", System.Globalization.CultureInfo.InvariantCulture))%"></div></div>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+    <div class="col-12 col-lg-6">
+        <div class="section-card h-100">
+            <h5>Productos más vendidos</h5>
+            <small class="text-muted">Histórico de unidades e importe en ventas completadas</small>
+            @if (Model.ProductosMasVendidos.Count == 0)
+            {
+                <p class="text-muted text-center py-4 mb-0">Aún no hay detalles de ventas completadas.</p>
+            }
+            else
+            {
+                <div class="mt-3">
+                    @foreach (var producto in Model.ProductosMasVendidos)
+                    {
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between gap-2 mb-1"><strong>@producto.Nombre</strong><span>@producto.Unidades ud. · Bs @producto.Importe.ToString("N2")</span></div>
+                            <div class="dashboard-sale-track" role="img" aria-label="@producto.Nombre: @producto.Unidades unidades"><div class="dashboard-sale-fill dashboard-rank-fill" style="width:@(producto.Porcentaje.ToString("0.#", System.Globalization.CultureInfo.InvariantCulture))%"></div></div>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+
+<div class="row g-3">
+    <div class="col-12 col-xxl-7">
+        <div class="section-card h-100">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+                <div><h5 class="mb-1">Últimas ventas</h5><small class="text-muted">Más recientes primero</small></div>
+                <span class="badge text-bg-light">@Model.UltimasVentas.Count registro(s)</span>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light"><tr><th>ID</th><th>Fecha</th><th>Cliente</th><th>Usuario</th><th>Método de pago</th><th class="text-end">Total</th><th>Estado</th></tr></thead>
+                    <tbody>
+                    @if (Model.UltimasVentas.Count == 0)
+                    {
+                        <tr><td colspan="7" class="text-center text-muted py-4">Todavía no hay ventas registradas.</td></tr>
+                    }
+                    else
+                    {
+                        @foreach (var venta in Model.UltimasVentas)
+                        {
+                            <tr>
+                                <td>#@venta.IdVenta</td>
+                                <td>@(venta.FechaVenta?.ToString("dd/MM/yyyy HH:mm") ?? "Sin fecha")</td>
+                                <td>@venta.Cliente.Trim()</td>
+                                <td>@venta.Usuario.Trim()</td>
+                                <td>@(venta.MetodoPago ?? "—")</td>
+                                <td class="text-end">@venta.Importe.ToString("N2")</td>
+                                <td><span class="badge @(venta.Estado == "Completada" ? "text-bg-success" : "text-bg-secondary")">@(venta.Estado ?? "Sin estado")</span></td>
+                            </tr>
+                        }
+                    }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-xxl-5">
+        <div class="section-card h-100">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+                <div><h5 class="mb-1">Productos con stock bajo</h5><small class="text-muted">Unidades Disponibles ≤ stock mínimo</small></div>
+                @if (User.IsInRole("Administrador"))
+                {
+                    <a asp-controller="Inventarios" asp-action="Index" class="btn btn-sm btn-outline-primary">Ver inventario</a>
+                }
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light"><tr><th>Producto</th><th class="text-end">Disponible</th><th class="text-end">Mínimo</th></tr></thead>
+                    <tbody>
+                    @if (Model.ProductosStockBajo.Count == 0)
+                    {
+                        <tr><td colspan="3" class="text-center text-muted py-4">No hay productos bajo el mínimo definido.</td></tr>
+                    }
+                    else
+                    {
+                        @foreach (var producto in Model.ProductosStockBajo)
+                        {
+                            <tr>
+                                <td><strong>@producto.Nombre</strong><small class="d-block text-muted">@producto.Marca @producto.Modelo</small></td>
+                                <td class="text-end"><span class="badge text-bg-warning">@producto.UnidadesDisponibles</span></td>
+                                <td class="text-end">@producto.StockMinimo</td>
+                            </tr>
+                        }
+                    }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

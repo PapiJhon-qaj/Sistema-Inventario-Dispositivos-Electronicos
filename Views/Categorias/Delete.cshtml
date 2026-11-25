@@ -1,0 +1,4 @@
+﻿@model SistemaInventario.Models.categoria
+@{ ViewData["Title"] = "Inhabilitar categoría"; }
+<div class="page-heading"><h2>Inhabilitar categoría</h2><p>El registro se conservará en la base y en el historial.</p></div>
+<div class="section-card"><div class="alert alert-warning">¿Confirmas que deseas inhabilitar esta categoría? No aparecerá al crear productos.</div><p><strong>@Model.nombre</strong></p><form asp-action="Delete" asp-route-id="@Model.idcategoria" method="post"><button class="btn btn-warning" type="submit">Inhabilitar</button> <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a></form></div>

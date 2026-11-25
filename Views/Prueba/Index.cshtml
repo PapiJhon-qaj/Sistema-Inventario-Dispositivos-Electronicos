@@ -1,0 +1,15 @@
+﻿@{ ViewData["Title"] = "Conexión a base de datos"; }
+<div class="page-heading">
+    <h2>Conexión a base de datos</h2>
+    <p>Estado de comunicación con MariaDB.</p>
+</div>
+<div class="section-card">
+    @if (ViewBag.ConexionCorrecta == true)
+    {
+        <div class="alert alert-success mb-0" role="status">Conexión correcta con la base de datos.</div>
+    }
+    else
+    {
+        <div class="alert alert-danger mb-0" role="alert">No se pudo conectar con la base de datos. Verifica que el servidor MariaDB de XAMPP esté iniciado y que la conexión esté configurada.</div>
+    }
+</div>

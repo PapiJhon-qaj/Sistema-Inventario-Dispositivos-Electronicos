@@ -1,0 +1,4 @@
+﻿@model SistemaInventario.Models.producto
+@{ ViewData["Title"] = "Inhabilitar producto"; }
+<div class="page-heading"><h2>Inhabilitar producto</h2><p>El producto y sus relaciones se conservarán.</p></div>
+<div class="section-card"><div class="alert alert-warning">¿Confirmas que deseas inhabilitar el producto? No estará disponible para compras ni para registrar nuevas unidades.</div><dl class="row"><dt class="col-sm-3">Producto</dt><dd class="col-sm-9">@Model.nombre</dd><dt class="col-sm-3">Categoría</dt><dd class="col-sm-9">@Model.categoria_idcategoriaNavigation.nombre</dd><dt class="col-sm-3">Marca y modelo</dt><dd class="col-sm-9">@Model.marca @Model.modelo</dd></dl><form asp-action="Delete" asp-route-id="@Model.idproducto" method="post"><button class="btn btn-warning" type="submit">Inhabilitar</button> <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a></form></div>

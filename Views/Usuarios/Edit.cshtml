@@ -1,0 +1,18 @@
+@model SistemaInventario.ViewModels.UsuarioFormViewModel
+@{ ViewData["Title"] = "Editar usuario"; }
+
+<div class="page-heading">
+    <h2>Editar usuario</h2>
+    <p>Actualiza los datos, estado o rol del usuario.</p>
+</div>
+<div class="section-card">
+    <form asp-action="Edit" asp-route-id="@Model.IdUsuario" method="post">
+        <input type="hidden" asp-for="IdUsuario" />
+        <partial name="_Formulario" model="Model" />
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary" disabled="@(ViewBag.HayRoles == false)">Guardar cambios</button>
+            <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+        </div>
+    </form>
+</div>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

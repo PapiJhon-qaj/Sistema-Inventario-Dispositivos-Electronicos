@@ -1,0 +1,57 @@
+@model SistemaInventario.ViewModels.CompraDetalleViewModel
+@{ ViewData["Title"] = "Detalle de compra"; }
+
+<div class="page-heading d-flex justify-content-between align-items-center flex-wrap gap-3">
+    <div><h2>Compra #@Model.IdCompra</h2><p>Detalle de productos e importes registrados.</p></div>
+    <a asp-action="Index" class="btn btn-outline-secondary">Volver a compras</a>
+</div>
+
+@if (TempData["Mensaje"] is string mensaje)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">@mensaje<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button></div>
+}
+
+<div class="section-card mt-0">
+    <div class="row">
+        <div class="col-md-6"><dl class="row mb-0">
+            <dt class="col-sm-4">Proveedor</dt><dd class="col-sm-8">@Model.Proveedor</dd>
+            <dt class="col-sm-4">Registró</dt><dd class="col-sm-8">@Model.Usuario</dd>
+        </dl></div>
+        <div class="col-md-6"><dl class="row mb-0">
+            <dt class="col-sm-4">Factura</dt><dd class="col-sm-8">@(Model.NumeroFactura ?? "Sin factura")</dd>
+            <dt class="col-sm-4">Fecha</dt><dd class="col-sm-8">@(Model.FechaCompra?.ToString("dd/MM/yyyy HH:mm") ?? "Sin fecha")</dd>
+        </dl></div>
+    </div>
+</div>
+
+<div class="section-card">
+    <h5>Productos comprados</h5>
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead class="table-light"><tr><th>Producto</th><th class="text-end">Cantidad</th><th class="text-end">Costo unitario</th><th class="text-end">Subtotal</th></tr></thead>
+            <tbody>
+            @if (Model.Detalles.Count == 0)
+            {
+                <tr><td colspan="4" class="text-center text-muted py-4">Esta compra no tiene detalles registrados.</td></tr>
+            }
+            else
+            {
+                @foreach (var detalle in Model.Detalles)
+                {
+                    <tr>
+                        <td>@detalle.Producto</td>
+                        <td class="text-end">@detalle.Cantidad</td>
+                        <td class="text-end">@detalle.CostoUnitario.ToString("N2")</td>
+                        <td class="text-end">@detalle.Subtotal.ToString("N2")</td>
+                    </tr>
+                }
+            }
+            </tbody>
+            <tfoot><tr><th colspan="3" class="text-end">Total de compra</th><th class="text-end">@Model.Total.ToString("N2")</th></tr></tfoot>
+        </table>
+    </div>
+    <div class="alert alert-info mb-0">
+        La compra no genera automáticamente filas de inventario. Registra desde el módulo Inventario cada unidad física recibida y sus datos disponibles.
+        <a asp-controller="Inventarios" asp-action="Create" class="alert-link">Registrar unidades</a>.
+    </div>
+</div>

@@ -1,0 +1,14 @@
+@model SistemaInventario.ViewModels.RolFormViewModel
+@{ ViewData["Title"] = "Nuevo rol"; }
+
+<div class="page-heading"><h2>Nuevo rol</h2><p>Registra un rol que luego podrás asignar a usuarios.</p></div>
+<div class="section-card">
+    <form asp-action="Create" method="post">
+        <partial name="_Formulario" model="Model" />
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary">Guardar rol</button>
+            <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+        </div>
+    </form>
+</div>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

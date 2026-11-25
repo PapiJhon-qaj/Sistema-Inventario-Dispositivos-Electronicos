@@ -1,0 +1,32 @@
+@model SistemaInventario.ViewModels.VentaDetalleViewModel
+@{ ViewData["Title"] = $"Anular venta #{Model.IdVenta}"; }
+
+<div class="page-heading">
+    <h2>Anular venta #@Model.IdVenta</h2>
+    <p>Confirma la anulación sin borrar el historial.</p>
+</div>
+
+<div class="section-card mt-0">
+    @if (Model.Estado != "Completada")
+    {
+        <div class="alert alert-warning">Esta venta ya no está en estado Completada y no puede anularse otra vez.</div>
+    }
+    else
+    {
+        <div class="alert alert-warning">Al confirmar, el sistema cambiará la venta a Anulada y los equipos asociados a Disponible. El historial de la venta y sus detalles se conservará.</div>
+        <div class="alert alert-info">Por el índice UNIQUE de inventario_idinventario en detalle_venta, los equipos restaurados no podrán asociarse a una nueva venta mientras se mantenga este detalle.</div>
+    }
+    <dl class="row">
+        <dt class="col-sm-3">Fecha</dt><dd class="col-sm-9">@(Model.FechaVenta?.ToString("dd/MM/yyyy HH:mm") ?? "Sin fecha")</dd>
+        <dt class="col-sm-3">Cliente</dt><dd class="col-sm-9">@Model.Cliente</dd>
+        <dt class="col-sm-3">Total</dt><dd class="col-sm-9">@Model.Total.ToString("N2")</dd>
+        <dt class="col-sm-3">Equipos</dt><dd class="col-sm-9">@Model.Detalles.Count</dd>
+    </dl>
+    <form asp-action="Anular" asp-route-id="@Model.IdVenta" method="post" class="d-flex gap-2">
+        @if (Model.Estado == "Completada")
+        {
+            <button type="submit" class="btn btn-danger">Confirmar anulación</button>
+        }
+        <a asp-action="Details" asp-route-id="@Model.IdVenta" class="btn btn-outline-secondary">Volver</a>
+    </form>
+</div>

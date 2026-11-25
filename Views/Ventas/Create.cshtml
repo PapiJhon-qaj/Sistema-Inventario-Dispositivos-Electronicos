@@ -1,0 +1,70 @@
+﻿@model SistemaInventario.ViewModels.VentaCreateViewModel
+@{
+    ViewData["Title"] = "Registrar venta";
+    var equipos = (IEnumerable<SistemaInventario.ViewModels.EquipoDisponibleViewModel>)ViewBag.EquiposDisponibles;
+}
+<div class="page-heading"><h2>Registrar venta</h2><p>Selecciona cliente y unidades disponibles.</p></div>
+<div class="section-card">
+    @if (ViewBag.HayClientes == false || ViewBag.HayEquipos == false)
+    {
+        <div class="alert alert-warning">
+            @if (ViewBag.HayClientes == false) { <span>No hay clientes activos. @if (User.IsInRole("Vendedor")) { <a asp-controller="Clientes" asp-action="Create" class="alert-link">Registrar cliente</a> }</span> }
+            @if (ViewBag.HayEquipos == false) { <span>No hay unidades disponibles asociadas a productos activos.</span> }
+        </div>
+    }
+    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+    <form asp-action="Create" method="post">
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <label asp-for="ClienteId" class="form-label">Cliente *</label>
+                <select asp-for="ClienteId" asp-items="ViewBag.Clientes" class="form-select" required><option value="">Selecciona un cliente</option></select>
+                <span asp-validation-for="ClienteId" class="text-danger"></span>
+            </div>
+            <div class="col-md-4 mb-3">
+                <label class="form-label">Usuario que registra</label>
+                <input class="form-control" value="@ViewBag.UsuarioActual" readonly />
+            </div>
+            <div class="col-md-4 mb-3">
+                <label asp-for="MetodoPago" class="form-label">Método de pago *</label>
+                <select asp-for="MetodoPago" asp-items="ViewBag.MetodosPago" class="form-select" required><option value="">Selecciona método</option></select>
+                <span asp-validation-for="MetodoPago" class="text-danger"></span>
+            </div>
+        </div>
+        <h5 class="mt-3">Equipos disponibles</h5>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-light"><tr><th>Elegir</th><th>Producto</th><th>IMEI</th><th>Número de serie</th><th class="text-end">Precio</th></tr></thead>
+                <tbody>
+                @if (equipos.Any())
+                {
+                    @foreach (var equipo in equipos)
+                    {
+                        <tr>
+                            <td><input class="form-check-input equipo-checkbox" type="checkbox" name="InventarioIds" value="@equipo.IdInventario" data-price="@equipo.PrecioVenta.ToString(System.Globalization.CultureInfo.InvariantCulture)" /></td>
+                            <td>@equipo.Producto</td><td>@(equipo.Imei ?? "—")</td><td>@(equipo.NumeroSerie ?? "—")</td><td class="text-end">@equipo.PrecioVenta.ToString("N2")</td>
+                        </tr>
+                    }
+                }
+                else { <tr><td colspan="5" class="text-center text-muted py-4">No hay equipos disponibles.</td></tr> }
+                </tbody>
+                <tfoot><tr><th colspan="4" class="text-end">Total estimado</th><th id="total-estimado" class="text-end">0,00</th></tr></tfoot>
+            </table>
+        </div>
+        <span asp-validation-for="InventarioIds" class="text-danger"></span>
+        <div class="alert alert-info mt-3">El servidor valida disponibilidad y calcula nuevamente el total antes de guardar.</div>
+        <div class="d-flex gap-2"><button type="submit" class="btn btn-primary" disabled="@(ViewBag.HayClientes == false || ViewBag.HayEquipos == false)">Guardar venta</button><a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a></div>
+    </form>
+</div>
+@section Scripts {
+<script>
+(() => {
+    const checks = [...document.querySelectorAll('.equipo-checkbox')];
+    const total = document.getElementById('total-estimado');
+    const actualizar = () => {
+        const importe = checks.filter(c => c.checked).reduce((suma, c) => suma + Number(c.dataset.price), 0);
+        total.textContent = new Intl.NumberFormat('es-BO', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(importe);
+    };
+    checks.forEach(c => c.addEventListener('change', actualizar)); actualizar();
+})();
+</script>
+}

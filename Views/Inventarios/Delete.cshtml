@@ -1,0 +1,9 @@
+﻿@model SistemaInventario.Models.inventario
+@{ ViewData["Title"] = "Marcar unidad como dañada"; }
+<div class="page-heading"><h2>Marcar unidad como dañada</h2><p>La unidad permanecerá en el inventario y en su historial.</p></div>
+<div class="section-card">
+    @if (Model.detalle_venta is not null) { <div class="alert alert-danger">Esta unidad tiene una venta y no puede cambiarse desde esta acción.</div> }
+    else { <div class="alert alert-warning">¿Confirmas que la unidad está dañada? Su estado cambiará a Dañado y no podrá venderse.</div> }
+    <dl class="row"><dt class="col-sm-3">Producto</dt><dd class="col-sm-9">@Model.producto_idproductoNavigation.nombre</dd><dt class="col-sm-3">IMEI / serie</dt><dd class="col-sm-9">@Model.imei / @Model.numero_serie</dd><dt class="col-sm-3">Estado actual</dt><dd class="col-sm-9">@Model.estado</dd></dl>
+    <form asp-action="Delete" asp-route-id="@Model.idinventario" method="post">@if (Model.detalle_venta is null) { <button class="btn btn-warning" type="submit">Marcar como Dañado</button> } <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a></form>
+</div>

@@ -1,0 +1,20 @@
+@model SistemaInventario.Models.producto
+@{ ViewData["Title"] = "Editar producto"; }
+
+<div class="page-heading">
+    <h2>Editar producto</h2>
+    <p>Actualiza los datos del producto seleccionado.</p>
+</div>
+
+<div class="section-card">
+    <form asp-action="Edit" asp-route-id="@Model.idproducto" method="post">
+        <input type="hidden" asp-for="idproducto" />
+        <partial name="_Formulario" model="Model" />
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary" disabled="@(ViewBag.HayCategorias == false)">Guardar cambios</button>
+            <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

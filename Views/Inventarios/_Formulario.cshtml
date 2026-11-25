@@ -1,0 +1,77 @@
+@model SistemaInventario.Models.inventario
+@{
+    var tieneVenta = ViewBag.TieneVenta == true;
+    var esNuevo = Model.idinventario == 0;
+}
+
+<div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+@if (ViewBag.HayProductos == false)
+{
+    <div class="alert alert-warning">
+        Para registrar una unidad primero debe existir un producto.
+        <a asp-controller="Productos" asp-action="Create" class="alert-link">Crear producto</a>
+    </div>
+}
+@if (tieneVenta)
+{
+    <div class="alert alert-info">Esta unidad tiene una venta asociada; sus datos y el estado Vendido están protegidos.</div>
+}
+
+<div class="mb-3">
+    <label asp-for="producto_idproducto" class="form-label">Producto *</label>
+    @if (tieneVenta)
+    {
+        <input type="hidden" asp-for="producto_idproducto" />
+        <input class="form-control" value="@Model.producto_idproductoNavigation?.nombre" disabled />
+    }
+    else
+    {
+        <select asp-for="producto_idproducto" asp-items="ViewBag.Productos" class="form-select" required>
+            <option value="">Selecciona un producto</option>
+        </select>
+    }
+    <span asp-validation-for="producto_idproducto" class="text-danger"></span>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-3">
+        <label asp-for="imei" class="form-label">IMEI</label>
+        @if (tieneVenta) { <input type="hidden" asp-for="imei" /><input class="form-control" value="@Model.imei" disabled /> }
+        else { <input asp-for="imei" class="form-control" maxlength="30" /> }
+        <span asp-validation-for="imei" class="text-danger"></span>
+    </div>
+    <div class="col-md-6 mb-3">
+        <label asp-for="numero_serie" class="form-label">Número de serie</label>
+        @if (tieneVenta) { <input type="hidden" asp-for="numero_serie" /><input class="form-control" value="@Model.numero_serie" disabled /> }
+        else { <input asp-for="numero_serie" class="form-control" maxlength="150" /> }
+        <span asp-validation-for="numero_serie" class="text-danger"></span>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-3">
+        <label asp-for="fecha_ingreso" class="form-label">Fecha de ingreso *</label>
+        @if (tieneVenta) { <input type="hidden" asp-for="fecha_ingreso" /><input class="form-control" value="@(Model.fecha_ingreso?.ToString("yyyy-MM-dd HH:mm"))" disabled /> }
+        else { <input asp-for="fecha_ingreso" class="form-control" type="datetime-local" required /> }
+        <span asp-validation-for="fecha_ingreso" class="text-danger"></span>
+    </div>
+    @if (!esNuevo)
+    {
+        <div class="col-md-6 mb-3">
+            <label asp-for="estado" class="form-label">Estado *</label>
+            @if (tieneVenta)
+            {
+                <input type="hidden" asp-for="estado" />
+                <input class="form-control" value="Vendido" disabled />
+            }
+            else
+            {
+                <select asp-for="estado" asp-items="ViewBag.Estados" class="form-select" required>
+                    <option value="">Selecciona un estado</option>
+                </select>
+            }
+            <span asp-validation-for="estado" class="text-danger"></span>
+        </div>
+    }
+</div>

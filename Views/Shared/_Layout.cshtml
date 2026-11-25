@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Sistema de Inventario</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <h4>Sistema</h4>
+                <span>Gestión comercial</span>
+            </div>
+            <nav class="sidebar-menu">
+                <span class="menu-title">MENÚ PRINCIPAL</span>
+                <a asp-controller="Home" asp-action="Index" class="menu-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" ? "active" : "")"><span>IN</span> Inicio</a>
+                @if (User.IsInRole("Administrador"))
+                {
+                <a asp-controller="Categorias" asp-action="Index" class="menu-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Categorias" ? "active" : "")"><span>CA</span> Categorías</a>
+                <a asp-controller="Productos" asp-action="Index" class="menu-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Productos" ? "active" : "")"><span>PR</span> Productos</a>
+                <a asp-controller="Inventarios" asp-action="Index" class="menu-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Inventarios" ? "active" : "")"><span>IN</span> Inventario</a>
+                }
+                <a asp-controller="Ventas" asp-action="Index" class="menu-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Ventas" ? "active" : "")"><span>VE</span> Ventas</a>
+                <a asp-controller="Clientes" asp-action="Index" class="menu-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Clientes" ? "active" : "")"><span>CL</span> Clientes</a>
+                @if (User.IsInRole("Administrador"))
+                {
+                <a asp-controller="Compras" asp-action="Index" class="menu-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Compras" ? "active" : "")"><span>CO</span> Compras</a>
+                <a asp-controller="Proveedores" asp-action="Index" class="menu-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Proveedores" ? "active" : "")"><span>PV</span> Proveedores</a>
+                <a asp-controller="Usuarios" asp-action="Index" class="menu-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Usuarios" ? "active" : "")"><span>US</span> Usuarios</a>
+                <a asp-controller="Roles" asp-action="Index" class="menu-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Roles" ? "active" : "")"><span>RO</span> Roles</a>
+                <a asp-controller="Prueba" asp-action="Index" class="menu-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Prueba" ? "active" : "")"><span>DB</span> Conexión a base de datos</a>
+                }
+            </nav>
+            <div class="sidebar-footer">
+                Sistema de Inventario
+                <small>@User.Identity?.Name · @User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value</small>
+                <form asp-controller="Account" asp-action="Logout" method="post" class="mt-2">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-sm btn-outline-light w-100">Cerrar sesión</button>
+                </form>
+            </div>
+        </aside>
+        <main class="main-content">
+            <header class="topbar">
+                <div><h6 class="mb-0">Sistema de Gestión Comercial</h6><small class="text-muted">Panel de administración</small></div>
+                <div class="topbar-user"><span class="user-avatar">@((User.Identity?.Name ?? "SI").Substring(0, Math.Min(2, (User.Identity?.Name ?? "SI").Length)).ToUpperInvariant())</span><span>@User.Identity?.Name</span></div>
+            </header>
+            <section class="page-content">@RenderBody()</section>
+            <footer class="main-footer">Sistema de Inventario y Ventas</footer>
+        </main>
+    </div>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

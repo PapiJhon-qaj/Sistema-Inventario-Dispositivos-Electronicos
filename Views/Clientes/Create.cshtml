@@ -1,0 +1,16 @@
+@model SistemaInventario.Models.cliente
+@{ ViewData["Title"] = "Nuevo cliente"; }
+
+<div class="page-heading">
+    <h2>Nuevo cliente</h2>
+    <p>Completa los datos del cliente.</p>
+</div>
+<div class="section-card">
+    <form asp-action="Create" method="post">
+        <partial name="_Formulario" model="Model" />
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary">Guardar cliente</button>
+            <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+        </div>
+    </form>
+</div>

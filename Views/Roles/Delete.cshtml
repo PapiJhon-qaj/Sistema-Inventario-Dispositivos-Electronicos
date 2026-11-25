@@ -1,0 +1,4 @@
+﻿@model SistemaInventario.ViewModels.RolEliminarViewModel
+@{ ViewData["Title"] = "Inhabilitar rol"; }
+<div class="page-heading"><h2>Inhabilitar rol</h2><p>Los usuarios asociados conservarán su relación, pero no podrán autenticarse con este rol hasta reactivarlo.</p></div>
+<div class="section-card"><div class="alert alert-warning">¿Confirmas que deseas inhabilitar el rol aunque tenga usuarios asignados? Se conservarán sus registros.</div><dl class="row"><dt class="col-sm-3">Nombre</dt><dd class="col-sm-9">@Model.Nombre</dd><dt class="col-sm-3">Usuarios asignados</dt><dd class="col-sm-9">@Model.UsuariosAsignados</dd></dl><form asp-action="Delete" asp-route-id="@Model.IdRol" method="post"><button class="btn btn-warning" type="submit">Inhabilitar rol</button> <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a></form></div>

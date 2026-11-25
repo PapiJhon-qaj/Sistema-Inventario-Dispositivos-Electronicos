@@ -1,0 +1,4 @@
+﻿@model SistemaInventario.Models.proveedor
+@{ ViewData["Title"] = "Inhabilitar proveedor"; }
+<div class="page-heading"><h2>Inhabilitar proveedor</h2><p>Sus compras anteriores seguirán disponibles en el historial.</p></div>
+<div class="section-card"><div class="alert alert-warning">¿Confirmas que deseas inhabilitar este proveedor? No aparecerá al registrar compras.</div><dl class="row"><dt class="col-sm-3">NIT</dt><dd class="col-sm-9">@Model.nit</dd><dt class="col-sm-3">Nombre</dt><dd class="col-sm-9">@Model.nombre</dd></dl><form asp-action="Delete" asp-route-id="@Model.idproveedor" method="post"><button class="btn btn-warning" type="submit">Inhabilitar</button> <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a></form></div>

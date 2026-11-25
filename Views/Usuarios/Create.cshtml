@@ -1,0 +1,17 @@
+@model SistemaInventario.ViewModels.UsuarioFormViewModel
+@{ ViewData["Title"] = "Nuevo usuario"; }
+
+<div class="page-heading">
+    <h2>Nuevo usuario</h2>
+    <p>Completa los datos y asigna un rol existente.</p>
+</div>
+<div class="section-card">
+    <form asp-action="Create" method="post">
+        <partial name="_Formulario" model="Model" />
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary" disabled="@(ViewBag.HayRoles == false)">Guardar usuario</button>
+            <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+        </div>
+    </form>
+</div>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

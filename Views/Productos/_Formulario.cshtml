@@ -1,0 +1,65 @@
+@model SistemaInventario.Models.producto
+
+<div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+@if (ViewBag.HayCategorias == false)
+{
+    <div class="alert alert-warning">
+        Para guardar un producto primero debes registrar una categoría.
+        <a asp-controller="Categorias" asp-action="Create" class="alert-link">Crear categoría</a>
+    </div>
+}
+
+<div class="mb-3">
+    <label asp-for="nombre" class="form-label">Nombre *</label>
+    <input asp-for="nombre" class="form-control" maxlength="150" required />
+    <span asp-validation-for="nombre" class="text-danger"></span>
+</div>
+
+<div class="mb-3">
+    <label asp-for="descripcion" class="form-label">Descripción</label>
+    <textarea asp-for="descripcion" class="form-control" rows="3"></textarea>
+    <span asp-validation-for="descripcion" class="text-danger"></span>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-3">
+        <label asp-for="marca" class="form-label">Marca</label>
+        <input asp-for="marca" class="form-control" maxlength="100" />
+        <span asp-validation-for="marca" class="text-danger"></span>
+    </div>
+    <div class="col-md-6 mb-3">
+        <label asp-for="modelo" class="form-label">Modelo</label>
+        <input asp-for="modelo" class="form-control" maxlength="100" />
+        <span asp-validation-for="modelo" class="text-danger"></span>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-3">
+        <label asp-for="codigo_barras" class="form-label">Código de barras</label>
+        <input asp-for="codigo_barras" class="form-control" maxlength="100" />
+        <span asp-validation-for="codigo_barras" class="text-danger"></span>
+    </div>
+    <div class="col-md-6 mb-3">
+        <label asp-for="categoria_idcategoria" class="form-label">Categoría *</label>
+        <select asp-for="categoria_idcategoria" asp-items="ViewBag.Categorias" class="form-select" required>
+            <option value="">Selecciona una categoría</option>
+        </select>
+        <span asp-validation-for="categoria_idcategoria" class="text-danger"></span>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-3">
+        <label asp-for="precio_venta" class="form-label">Precio de venta (Bs) *</label>
+        <input asp-for="precio_venta" class="form-control" type="number" min="0" max="99999999.99" step="0.01" required />
+        <small class="form-text text-muted">Escribe el valor sin separador de miles, por ejemplo: 1850 o 1850.00.</small>
+        <span asp-validation-for="precio_venta" class="text-danger"></span>
+    </div>
+    <div class="col-md-6 mb-3">
+        <label asp-for="stock_minimo" class="form-label">Stock mínimo</label>
+        <input asp-for="stock_minimo" class="form-control" type="number" min="0" />
+        <span asp-validation-for="stock_minimo" class="text-danger"></span>
+    </div>
+</div>

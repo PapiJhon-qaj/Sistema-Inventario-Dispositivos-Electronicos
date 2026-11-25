@@ -1,0 +1,12 @@
+﻿@model IEnumerable<SistemaInventario.Models.cliente>
+@{ ViewData["Title"] = "Clientes"; }
+<div class="page-heading d-flex justify-content-between align-items-center flex-wrap gap-3"><div><h2>Clientes</h2><p>Consulta clientes y registra clientes para las ventas.</p></div>@if (User.IsInRole("Vendedor")) { <a asp-action="Create" class="btn btn-primary">Nuevo cliente</a> }</div>
+@if (TempData["Mensaje"] is string mensaje) { <div class="alert alert-success">@mensaje</div> }
+@if (TempData["Error"] is string error) { <div class="alert alert-warning">@error</div> }
+<div class="section-card">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3"><h5 class="mb-0">Listado de clientes</h5><div class="btn-group btn-group-sm"><a asp-action="Index" asp-route-estado="activos" class="btn btn-outline-secondary">Activos</a><a asp-action="Index" asp-route-estado="inactivos" class="btn btn-outline-secondary">Inactivos</a><a asp-action="Index" asp-route-estado="todos" class="btn btn-outline-secondary">Todos</a></div></div>
+    <div class="table-responsive"><table class="table table-hover align-middle"><thead class="table-light"><tr><th>Documento</th><th>Nombre completo</th><th>Teléfono</th><th>Correo</th><th>Estado</th><th>Acciones</th></tr></thead><tbody>
+    @if (!Model.Any()) { <tr><td colspan="6" class="text-center text-muted py-4">No hay clientes para este filtro.</td></tr> }
+    @foreach (var item in Model) { <tr><td>@(item.documento ?? "—")</td><td>@item.nombre @item.apellido</td><td>@(item.telefono ?? "—")</td><td>@(item.correo ?? "—")</td><td><span class="badge @(item.activo ? "text-bg-success" : "text-bg-secondary")">@(item.activo ? "Activo" : "Inactivo")</span></td><td class="text-nowrap"><a asp-action="Details" asp-route-id="@item.idcliente" class="btn btn-sm btn-outline-secondary">Ver</a>@if (User.IsInRole("Administrador")) { <a asp-action="Edit" asp-route-id="@item.idcliente" class="btn btn-sm btn-outline-primary">Editar</a>@if (item.activo) { <a asp-action="Delete" asp-route-id="@item.idcliente" class="btn btn-sm btn-outline-warning">Inhabilitar</a> } else { <form asp-action="Reactivar" asp-route-id="@item.idcliente" method="post" class="d-inline"><button class="btn btn-sm btn-outline-success">Activar nuevamente</button></form> } }</td></tr> }
+    </tbody></table></div>
+</div>
